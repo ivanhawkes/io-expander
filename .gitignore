@@ -1,0 +1,18 @@
+# Don't save an logs.
+*.log
+
+# Keep Visual Studio from poluting the code.
+/.vs
+.vscode/
+
+# Build files
+/build
+CMakeFiles/
+cmake_install.cmake
+_deps/
+centre-module/Makefile
+
+# ELF dependancies.
+elf2uf2/
+*.elf.map
+
