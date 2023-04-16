@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Initialize the SDK directly.
-# NOTE: I am doing it this way because the standard include using the environmental path
-# simply fails to successfully find the path.
-include(/home/ivan/development/pico/pico-sdk/pico_sdk_init.cmake)
+include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
 project(control_panels C CXX ASM)
 set(CMAKE_C_STANDARD 11)

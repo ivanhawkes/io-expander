@@ -10,7 +10,9 @@ target_sources(io-expander PUBLIC
 target_include_directories(io-expander PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 
 # In addition to pico_stdlib required for common PicoSDK functionality, give access to double button reboot.
-target_link_libraries(io-expander PUBLIC pico_stdlib hardware_adc
+target_link_libraries(io-expander PUBLIC
+        pico_stdlib
+        hardware_i2c
         pico_bootsel_via_double_reset)
 
 pico_add_extra_outputs(io-expander)
