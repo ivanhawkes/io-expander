@@ -10,6 +10,8 @@
 #include "pico/stdlib.h"
 #include <stdio.h>
 
+#include <MCP23017.h>
+
 const uint kClockPin = 3;
 const uint kData01Pin = 4;
 const uint kData02Pin = 5;

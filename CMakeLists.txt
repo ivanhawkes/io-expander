@@ -27,3 +27,6 @@ add_compile_options(
 
 # Source folder.
 add_subdirectory(src)
+
+# Set a path to our includes.
+target_include_directories(io-expander PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
