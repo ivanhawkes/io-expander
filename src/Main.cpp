@@ -27,9 +27,9 @@ void Blink() {
   // Simple method to blink the default LED.
   // FIXME: This is completely wasteful.
   gpio_put(PICO_DEFAULT_LED_PIN, 1);
-  sleep_ms(100);
+  sleep_ms(50);
   gpio_put(PICO_DEFAULT_LED_PIN, 0);
-  sleep_ms(100);
+  sleep_ms(50);
 }
 
 // Write 1 byte to the specified register
@@ -75,18 +75,50 @@ int reg_read(i2c_inst_t *i2c, const uint addr, const uint8_t reg, uint8_t *buf,
   return num_bytes_read;
 }
 
-void Loop() {
+void TestDisplay(uint8_t address) {
   // Read from PORTB.
   data[0] = 0x13;
-  data[1] = 0xAA; // TEST: random garbage
-  i2c_write_blocking(i2c, kAddressFirst, data, 1, true);
-  i2c_read_blocking(i2c, kAddressFirst, data, 1, false);
-  printf("value = 0x%0X\r\n", data[0]);
+  data[1] = 0x3C; // TEST: random garbage
+  i2c_write_blocking(i2c, address, data, 1, true);
+  i2c_read_blocking(i2c, address, data, 1, false);
+  printf("Addr: 0x%0X  value: 0x%0X    ", address, data[0]);
   data[1] = data[0]; // Copy the returned result for output.
 
   // Write the previously read value to PORTA.
   data[0] = 0x12;
-  i2c_write_blocking(i2c, kAddressFirst, data, 2, false);
+  i2c_write_blocking(i2c, address, data, 2, false);
+}
+
+void Loop() {
+  TestDisplay(kAddressFirst);
+  TestDisplay(kAddressSecond);
+  TestDisplay(kAddressThird);
+  TestDisplay(kAddressFourth);
+
+  printf("\r\n");
+}
+
+void InitialiseIOExpander(uint8_t address) {
+
+  // Set PORTA to output mode.
+  data[0] = 0x00; // MCP23017::ControlRegister::IODirectionB;
+  data[1] = 0x00;
+  i2c_write_blocking(i2c, address, data, 2, false);
+
+  // Set PORTA pullups to OFF.
+  data[0] = 0x0C;
+  data[1] = 0x00;
+  i2c_write_blocking(i2c, address, data, 2, false);
+
+  // Set PORTB to input mode.
+  data[0] = 0x01;
+  data[1] = 0xFF;
+  i2c_write_blocking(i2c, address, data, 2, false);
+
+  // Set PORTB pullups to ON.
+  data[0] = 0x0D;
+  data[1] = 0xFF;
+  i2c_write_blocking(i2c, address, data, 2, false);
 }
 
 void Initialise() {
@@ -97,7 +129,7 @@ void Initialise() {
   stdio_uart_init_full(uart0, 115200, 16, 17);
 
   // Initialize I2C port at 400 kHz.
-  uint actualRate = i2c_init(i2c, 400 * 1000);
+  uint actualRate = i2c_init(i2c, 100 * 1000);
 
   printf("\n\nIO Expander: Rate = %u\n\n", actualRate);
 
@@ -113,25 +145,10 @@ void Initialise() {
 
   printf("\n\nPre-write\n\n");
 
-  // Set PORTA to output mode.
-  data[0] = 0x00; // MCP23017::ControlRegister::IODirectionB;
-  data[1] = 0x00;
-  i2c_write_blocking(i2c, kAddressFirst, data, 2, false);
-
-  // Set PORTA pullups to OFF.
-  data[0] = 0x0C;
-  data[1] = 0x00;
-  i2c_write_blocking(i2c, kAddressFirst, data, 2, false);
-
-  // Set PORTB to input mode.
-  data[0] = 0x01;
-  data[1] = 0xFF;
-  i2c_write_blocking(i2c, kAddressFirst, data, 2, false);
-
-  // Set PORTB pullups to ON.
-  data[0] = 0x0D;
-  data[1] = 0xFF;
-  i2c_write_blocking(i2c, kAddressFirst, data, 2, false);
+  InitialiseIOExpander(kAddressFirst);
+  InitialiseIOExpander(kAddressSecond);
+  InitialiseIOExpander(kAddressThird);
+  InitialiseIOExpander(kAddressFourth);
 
   printf("\n\nInit complete!\n\n");
 }
