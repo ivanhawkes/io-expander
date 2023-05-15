@@ -115,6 +115,11 @@ void InitialiseIOExpander(uint8_t address) {
   data[1] = 0xFF;
   i2c_write_blocking(i2c, address, data, 2, false);
 
+  // Set PORTB polarity to the opposite of the pin.
+  data[0] = 0x03;
+  data[1] = 0xFF;
+  i2c_write_blocking(i2c, address, data, 2, false);
+
   // Set PORTB pullups to ON.
   data[0] = 0x0D;
   data[1] = 0xFF;
@@ -142,8 +147,6 @@ void Initialise() {
   gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
   gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
   gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-
-  printf("\n\nPre-write\n\n");
 
   InitialiseIOExpander(kAddressFirst);
   InitialiseIOExpander(kAddressSecond);
