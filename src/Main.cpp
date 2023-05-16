@@ -101,7 +101,7 @@ void Loop() {
 void InitialiseIOExpander(uint8_t address) {
 
   // Set PORTA to output mode.
-  data[0] = 0x00; // MCP23017::ControlRegister::IODirectionB;
+  data[0] = 0x00; // MCP23017::ControlRegister::IODirectionA;
   data[1] = 0x00;
   i2c_write_blocking(i2c, address, data, 2, false);
 
