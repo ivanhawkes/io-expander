@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 
-# Initialize the SDK directly.
-include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+# Initialize the Pico SDK. This must be done before project().
+include($ENV{PICO_SDK_PATH}/pico_sdk_init.cmake)
 
-project(control_panels C CXX ASM)
+project(io-expander C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 

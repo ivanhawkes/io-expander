@@ -1,14 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
 
-# initialize the SDK based on PICO_SDK_PATH
-# note: this must happen before project()
-include(~/projects/pico-sdk/pico_sdk_init.cmake)
-
-project(io-expander)
-
-# initialize the Raspberry Pi Pico SDK
-pico_sdk_init()
-
 add_executable(io-expander)
 
 target_sources(io-expander PUBLIC
