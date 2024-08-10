@@ -118,6 +118,7 @@ void InitialiseIOExpander(uint8_t address)
 	// Set PORTA pullups to OFF.
 	data[0] = 0x0C;
 	data[1] = 0x00;
+	// data[1] = 0xFF;
 	i2c_write_blocking(i2c, address, data, 2, false);
 
 	// Set PORTB to input mode.
@@ -127,6 +128,7 @@ void InitialiseIOExpander(uint8_t address)
 
 	// Set PORTB pullups to ON.
 	data[0] = 0x0D;
+	// data[1] = 0x00;
 	data[1] = 0xFF;
 	i2c_write_blocking(i2c, address, data, 2, false);
 
@@ -156,8 +158,10 @@ void Initialise()
 	// Initialize I2C pins
 	gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
 	gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-	gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-	gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+	// gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+	// gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+	gpio_disable_pulls(PICO_DEFAULT_I2C_SDA_PIN);
+	gpio_disable_pulls(PICO_DEFAULT_I2C_SCL_PIN);
 
 	InitialiseIOExpander(kAddressFirst);
 	InitialiseIOExpander(kAddressSecond);
