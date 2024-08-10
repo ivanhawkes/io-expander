@@ -23,6 +23,7 @@ i2c_inst_t *i2c = i2c0;
 // Buffer to store raw reads
 uint8_t data[6];
 
+
 void Blink()
 {
 	// Simple method to blink the default LED.
@@ -32,6 +33,7 @@ void Blink()
 	gpio_put(PICO_DEFAULT_LED_PIN, 0);
 	sleep_ms(50);
 }
+
 
 // Write 1 byte to the specified register
 int reg_write(i2c_inst_t *i2c, const uint addr, const uint8_t reg, uint8_t *buf, const uint8_t nbytes)
@@ -59,6 +61,7 @@ int reg_write(i2c_inst_t *i2c, const uint addr, const uint8_t reg, uint8_t *buf,
 	return num_bytes_read;
 }
 
+
 // Read byte(s) from specified register. If nbytes > 1, read from consecutive
 // registers.
 int reg_read(i2c_inst_t *i2c, const uint addr, const uint8_t reg, uint8_t *buf, const uint8_t nbytes)
@@ -79,6 +82,7 @@ int reg_read(i2c_inst_t *i2c, const uint addr, const uint8_t reg, uint8_t *buf, 
 	return num_bytes_read;
 }
 
+
 void TestDisplay(uint8_t address)
 {
 	// Read from PORTB.
@@ -97,6 +101,7 @@ void TestDisplay(uint8_t address)
 	i2c_write_blocking(i2c, address, data, 2, false);
 }
 
+
 void Loop()
 {
 	TestDisplay(kAddressFirst);
@@ -106,6 +111,7 @@ void Loop()
 
 	printf("\r\n");
 }
+
 
 void InitialiseIOExpander(uint8_t address)
 {
@@ -118,7 +124,6 @@ void InitialiseIOExpander(uint8_t address)
 	// Set PORTA pullups to OFF.
 	data[0] = 0x0C;
 	data[1] = 0x00;
-	// data[1] = 0xFF;
 	i2c_write_blocking(i2c, address, data, 2, false);
 
 	// Set PORTB to input mode.
@@ -128,7 +133,6 @@ void InitialiseIOExpander(uint8_t address)
 
 	// Set PORTB pullups to ON.
 	data[0] = 0x0D;
-	// data[1] = 0x00;
 	data[1] = 0xFF;
 	i2c_write_blocking(i2c, address, data, 2, false);
 
@@ -158,8 +162,8 @@ void Initialise()
 	// Initialize I2C pins
 	gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
 	gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-	// gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-	// gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+
+	// We want the pullup pins off, because we use physical ones.
 	gpio_disable_pulls(PICO_DEFAULT_I2C_SDA_PIN);
 	gpio_disable_pulls(PICO_DEFAULT_I2C_SCL_PIN);
 
