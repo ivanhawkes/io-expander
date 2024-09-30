@@ -1,32 +1,78 @@
+# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
+if(WIN32)
+    set(USERHOME $ENV{USERPROFILE})
+else()
+    set(USERHOME $ENV{HOME})
+endif()
+set(sdkVersion 2.0.0)
+set(toolchainVersion 13_2_Rel1)
+set(picotoolVersion 2.0.0)
+set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+if (EXISTS ${picoVscode})
+    include(${picoVscode})
+endif()
+# ====================================================================================
+# Generated Cmake Pico project file
+
 cmake_minimum_required(VERSION 3.14)
 
-# Initialize the Pico SDK. This must be done before project().
-include($ENV{PICO_SDK_PATH}/pico_sdk_init.cmake)
-
-project(io-expander C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Build with lower optomisation level.
-set(PICO_DEOPTIMIZED_DEBUG 1)
 
-if (PICO_SDK_VERSION_STRING VERSION_LESS "1.3.0")
-    message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.3.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
+# Initialise pico_sdk from installed location
+# (note this can come from environment, CMake cache etc)
+
+# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
+if(WIN32)
+    set(USERHOME $ENV{USERPROFILE})
+else()
+    set(USERHOME $ENV{HOME})
 endif()
+set(sdkVersion 2.0.0)
+set(toolchainVersion 13_2_Rel1)
+set(picotoolVersion 2.0.0)
+set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+if (EXISTS ${picoVscode})
+    include(${picoVscode})
+endif()
+# ====================================================================================
+set(PICO_BOARD pico CACHE STRING "Board type")
 
-set(MAIN_PROJECT_PATH ${PROJECT_SOURCE_DIR})
+# Pull in Raspberry Pi Pico SDK (must be before project)
+include(pico_sdk_import.cmake)
 
-# Initialize the SDK
+project(io-expander C CXX ASM)
+
+# Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-add_compile_options(
-    -Wall
-    -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
-    -Wno-unused-function # we have some for the docs that aren't called
-    -Wno-maybe-uninitialized)
+# Add executable. Default name is the project name, version 0.1
 
-# Source folder.
-add_subdirectory(src)
+add_executable(io-expander 
+  src/io-expander.cpp)
 
-# Set a path to our includes.
-target_include_directories(io-expander PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
+pico_set_program_name(io-expander "io-expander")
+pico_set_program_version(io-expander "0.1")
+
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(io-expander 1)
+pico_enable_stdio_usb(io-expander 0)
+
+# Add the standard library to the build
+target_link_libraries(io-expander
+        pico_stdlib
+        )
+
+# Add the standard include files to the build
+target_include_directories(io-expander PRIVATE
+  ${CMAKE_CURRENT_LIST_DIR}/include
+  ${CMAKE_CURRENT_LIST_DIR}
+  ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
+)
+
+# Add any user requested libraries
+target_link_libraries(io-expander hardware_i2c)
+
+pico_add_extra_outputs(io-expander)

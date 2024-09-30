@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string>
 
-#include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include "pico/time.h"
+#include <hardware/i2c.h>
 
 #include "MCP23017.h"
 
@@ -89,8 +89,6 @@ void TestDisplay(uint8_t address)
 	data[0] = 0x13;
 	data[1] = 0x00; // TEST: random garbage
 	reg_read(i2c, address, data[0], data, 1);
-	// i2c_write_blocking(i2c, address, data, 1, true);
-	// i2c_read_blocking(i2c, address, data, 1, false);
 
 	// Get some visual output.
 	printf("Addr: 0x%0X  value: 0x%0X    ", address, data[0]);
