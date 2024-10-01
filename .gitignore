@@ -1,18 +1,23 @@
-# Don't save an logs.
+# Don't save log files.
 *.log
 
-# Keep Visual Studio from poluting the code.
-/.vs
-.vscode/
-
 # Build files
-/build
-CMakeFiles/
-cmake_install.cmake
-_deps/
-centre-module/Makefile
+/build/
 
-# ELF dependancies.
-elf2uf2/
-*.elf.map
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
 
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+# Ignore all local history of files
+.history
+.ionide

@@ -1,4 +1,4 @@
-echo Deploying IO Expander test to the Pico.
+echo Deploying build to the Pico.
 script="$0"
 basename="${script%/*}"
 
